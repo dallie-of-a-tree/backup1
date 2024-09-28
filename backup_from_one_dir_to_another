@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#defining paths
+sourc_dir="/tmp"
+destination_dir="/backups"
+backup_filename="backup_$(date +'%Y%m%d%H').tar.gz"
+
+#check to see if source folder exits
+if [ -d "$sourc_dir" ]; then
+    echo "$sourc_dir is there, Proceeding with backup"
+else
+    echo "$sourc_dir not found."
+    exit 1
+fi
+
+# Check if destination folder exists, create if it doesn't
+if [ ! -d "$destination_dir" ]; then
+    echo "$destination_dir not found. Creating it..."
+    mkdir -p "$destination_dir"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create $destination_dir. Exiting."
+        exit 1
+    fi
+fi
+
+#archiving soruce directory
+tar -czvf "$destination_dir/$backup_filename" -C "$sourc_dir" .
+
+#check to see if backup was successful or not
+
+if [ $? -eq 0 ]; then
+    echo Backup succeded. File created : $destination_dir/$backup_filename
+else
+    echo failed to create a backup file.
+    exit 1
+fi
+
+
